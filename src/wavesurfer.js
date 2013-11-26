@@ -66,6 +66,12 @@ var WaveSurfer = {
             my.fireEvent('play');
         });
 
+        this.backend.on('ready', function () {
+            my.clearMarks();
+            my.drawBuffer();
+            my.fireEvent('ready');
+        });
+
         this.on('play', function () {
             my.restartAnimationLoop();
         });
@@ -239,13 +245,7 @@ var WaveSurfer = {
     loadBuffer: function (data) {
         var my = this;
         this.pause();
-        this.backend.loadBuffer(data, function () {
-            my.clearMarks();
-            my.drawBuffer();
-            my.fireEvent('ready');
-        }, function () {
-            my.fireEvent('error', 'Error decoding audio');
-        });
+        this.backend.loadBuffer(data);
     },
 
     onProgress: function (e) {
@@ -259,10 +259,14 @@ var WaveSurfer = {
         this.fireEvent('loading', Math.round(percentComplete * 100), e.target);
     },
 
+    load: function (url) {
+        this.backend.renderMedia(url);
+    },
+
     /**
      * Loads an audio file via XHR.
      */
-    load: function (url) {
+    loadAjax: function (url) {
         var my = this;
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);

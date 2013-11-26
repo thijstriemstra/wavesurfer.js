@@ -109,19 +109,48 @@ WaveSurfer.WebAudio = {
      * Decodes binary data and creates buffer source.
      *
      * @param {ArrayBuffer} arraybuffer Audio data.
-     * @param {Function} cb Callback on success.
-     * @param {Function} errb Callback on error.
      */
-    loadBuffer: function (arraybuffer, cb, errb) {
+    loadBuffer: function (arraybuffer) {
         var my = this;
         this.offlineAc.decodeAudioData(
             arraybuffer,
             function (buffer) {
                 my.setBuffer(buffer);
-                cb && cb(buffer);
+                my.fireEvent('ready');
             },
-            errb
+            function () {
+                my.fireEvent('error', 'Error decoding audio');
+            }
         );
+    },
+
+    /**
+     * Create a media element source and render offline.
+     */
+    renderMedia: function (url) {
+        var my = this;
+        var audio = this.getAudioElement(url);
+        audio.addEventListener('canplay', function () {
+            var ac =  new (
+                window.OfflineAudioContext || window.webkitOfflineAudioContext
+            )(2, audio.duration * my.ac.sampleRate, my.ac.sampleRate);
+            var source = ac.createMediaElementSource(audio);
+            source.connect(ac.destination);
+            ac.startRendering();
+            ac.addEventListener('complete', function (e) {
+                source.disconnect();
+                my.setBuffer(e.renderedBuffer);
+                my.fireEvent('ready');
+            });
+            audio.play();
+        });
+    },
+
+    getAudioElement: function (url) {
+        var audio = new Audio();
+        audio.autoplay = false;
+        audio.src = url;
+        return audio;
     },
 
     loadEmpty: function () {
@@ -222,8 +251,7 @@ WaveSurfer.WebAudio = {
     },
 
     getPlayedPercents: function () {
-        var duration = this.getDuration();
-        return duration > 0 ? this.getCurrentTime() / duration : 0;
+        return (this.getCurrentTime() / this.getDuration()) || 0;
     },
 
     getCurrentTime: function () {
