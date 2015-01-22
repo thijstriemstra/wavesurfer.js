@@ -10,6 +10,7 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
         var waveCanvas = this.wrapper.appendChild(
             this.style(document.createElement('canvas'), {
                 position: 'absolute',
+                display: 'none',
                 zIndex: 1
             })
         );
@@ -34,6 +35,20 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
             );
             this.progressCc = progressCanvas.getContext('2d');
         }
+
+        var secondaryCanvas = this.wrapper.appendChild(
+            this.style(document.createElement('canvas'), {
+                position: 'absolute',
+                zIndex: 3
+            })
+        );
+        this.secondaryCc = secondaryCanvas.getContext('2d');
+
+        // setting this here, because updateWidth changes the size of
+        // the canvas which causes it to clear the waveform
+        this.secondaryCc.canvas.width = this.getWidth();
+        this.secondaryCc.canvas.height = this.params.height;
+        this.style(this.secondaryCc.canvas, {width: this.getWidth() + 'px'});
     },
 
     /**
@@ -110,6 +125,66 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
             // Always draw a median line
             cc.fillRect(0, halfH - $, this.width, $);
         }, this);
+    },
+
+    /**
+     * Draw and append the waveform.
+     */
+    appendWave: function (peaks, max) {
+
+        // draw wave
+        this.drawWave(peaks, max);
+
+        // append wave
+        if (this.currentDrawing === undefined) {
+
+            if (this.frameCount === undefined) {
+                // keeps track of current frame number
+                this.frameCount = 0;
+            }
+
+            if (this.frameCount == 0) {
+                // first frame is equal to first full waveform
+                this.secondaryCc.drawImage(this.waveCc.canvas, 0, 0);
+
+                // ready
+                this.frameCount += 1;
+
+            } else {
+                // other frames need to scale and re-use previous content on canvas
+                this.currentDrawing = new Image();
+                this.currentDrawing.onload = function (event) {
+
+                    this.newDrawing = new Image();
+                    this.newDrawing.onload = function (event) {
+                        // amount of pixels reserved on the right for appending
+                        // the new waveform
+                        var appendWidth = this.getWidth() / 10;
+
+                        // scale and redraw previous waveform
+                        this.secondaryCc.clearRect(0, 0, this.getWidth(), this.height);
+                        this.secondaryCc.drawImage(this.newDrawing, 0, 0,
+                            this.getWidth() - appendWidth, this.height);
+
+                        // place new waveform at the end
+                        this.secondaryCc.drawImage(this.currentDrawing,
+                            this.getWidth() - appendWidth, 0, appendWidth, this.height);
+
+                        // ready
+                        this.frameCount += 1;
+                        this.currentDrawing = undefined;
+
+                    }.bind(this);
+
+                    // get an instance of the image data that we can manipulate
+                    this.newDrawing.src = this.secondaryCc.canvas.toDataURL();
+
+                }.bind(this);
+
+                // load canvas wave
+                this.currentDrawing.src = this.waveCc.canvas.toDataURL();
+            }
+        }
     },
 
     /**

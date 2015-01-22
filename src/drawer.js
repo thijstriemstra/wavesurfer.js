@@ -79,6 +79,17 @@ WaveSurfer.Drawer = {
         this.drawWave(peaks, max);
     },
 
+    appendPeaks: function (peaks, length) {
+        this.resetScroll();
+        this.setWidth(length);
+        if (this.params.normalize) {
+            var max = WaveSurfer.util.max(peaks);
+        } else {
+            max = 1;
+        }
+        this.appendWave(peaks, max);
+    },
+
     style: function (el, styles) {
         Object.keys(styles).forEach(function (prop) {
             if (el.style[prop] != styles[prop]) {

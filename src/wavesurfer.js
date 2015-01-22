@@ -315,6 +315,33 @@ var WaveSurfer = {
     },
 
     /**
+     * Directly load an externally decoded AudioBuffer.
+     *
+     * @param {AudioBuffer} buffer AudioBuffer data.
+     */
+    appendDecodedBuffer: function (buffer) {
+        this.empty();
+        this.backend.load(buffer);
+
+        var nominalWidth = Math.round(
+            this.getDuration() * this.params.minPxPerSec * this.params.pixelRatio
+        );
+        var parentWidth = this.drawer.getWidth();
+        var width = nominalWidth;
+
+        // Fill container
+        if (this.params.fillParent && (!this.params.scrollParent || nominalWidth < parentWidth)) {
+            width = parentWidth;
+        }
+
+        var peaks = this.backend.getPeaks(width);
+        this.drawer.appendPeaks(peaks, width);
+        this.fireEvent('redraw', peaks, width);
+
+        this.fireEvent('ready');
+    },
+
+    /**
      * Loads audio data from a Blob or File object.
      *
      * @param {Blob|File} blob Audio data.

@@ -130,7 +130,7 @@
          */
         reloadBuffer: function(event) {
             if (!this.paused) {
-                this.wavesurfer.loadDecodedBuffer(event.inputBuffer);
+                this.wavesurfer.appendDecodedBuffer(event.inputBuffer);
             }
         },
 
