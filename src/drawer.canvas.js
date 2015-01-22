@@ -3,6 +3,9 @@
 WaveSurfer.Drawer.Canvas = Object.create(WaveSurfer.Drawer);
 
 WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
+    /**
+     * Create the elements for the waveform and cursor drawings.
+     */
     createElements: function () {
         var waveCanvas = this.wrapper.appendChild(
             this.style(document.createElement('canvas'), {
@@ -33,6 +36,9 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
         }
     },
 
+    /**
+     * Update the width of the waveform and cursor canvas elements.
+     */
     updateWidth: function () {
         var width = Math.round(this.width / this.params.pixelRatio);
 
@@ -49,6 +55,9 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
         this.clearWave();
     },
 
+    /**
+     * Clear the waveform and cursor drawings.
+     */
     clearWave: function () {
         this.waveCc.clearRect(0, 0, this.width, this.height);
         if (this.progressCc) {
@@ -56,6 +65,9 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
         }
     },
 
+    /**
+     * Draw the waveform and cursor.
+     */
     drawWave: function (peaks, max) {
         // A half-pixel offset makes lines crisp
         var $ = 0.5 / this.params.pixelRatio;
@@ -100,6 +112,9 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
         }, this);
     },
 
+    /**
+     * Update the position of the cursor.
+     */
     updateProgress: function (progress) {
         var pos = Math.round(
             this.width * progress
