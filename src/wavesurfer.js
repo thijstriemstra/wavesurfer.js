@@ -127,25 +127,40 @@ var WaveSurfer = {
         frame();
     },
 
+    /**
+     * Returns the duration of the audio clip in seconds.
+     */
     getDuration: function () {
         return this.backend.getDuration();
     },
 
+    /**
+     * Returns the current progress of the audio clip in seconds.
+     */
     getCurrentTime: function () {
         return this.backend.getCurrentTime();
     },
 
+    /**
+     * Start playback.
+     */
     play: function (start, end) {
         this.backend.play(start, end);
         this.restartAnimationLoop();
         this.fireEvent('play');
     },
 
+    /**
+     * Pause playback.
+     */
     pause: function () {
         this.backend.pause();
         this.fireEvent('pause');
     },
 
+    /**
+     * Toggle playback.
+     */
     playPause: function () {
         this.backend.isPaused() ? this.play() : this.pause();
     },
@@ -170,6 +185,9 @@ var WaveSurfer = {
         this.drawer.recenter(progress);
     },
 
+    /**
+     * Seek to position and start or resume playback.
+     */
     seekTo: function (progress) {
         var paused = this.backend.isPaused();
         // avoid small scrolls while paused seeking
@@ -188,6 +206,9 @@ var WaveSurfer = {
         this.fireEvent('seek', progress);
     },
 
+    /**
+     * Stops playback and goes back to the beginning.
+     */
     stop: function () {
         this.pause();
         this.seekTo(0);
@@ -235,11 +256,17 @@ var WaveSurfer = {
         }
     },
 
+    /**
+     * Toggle the scrollParent option and redraw.
+     */
     toggleScroll: function () {
         this.params.scrollParent = !this.params.scrollParent;
         this.drawBuffer();
     },
 
+    /**
+     * Toggle mouse interaction.
+     */
     toggleInteraction: function () {
         this.params.interact = !this.params.interact;
     },
@@ -262,7 +289,9 @@ var WaveSurfer = {
     },
 
     /**
-     * Internal method.
+     * Internal method that decodes and loads the supplied ArrayBuffer.
+     *
+     * @param {ArrayBuffer} arraybuffer ArrayBuffer data.
      */
     loadArrayBuffer: function (arraybuffer) {
         var my = this;
@@ -275,6 +304,8 @@ var WaveSurfer = {
 
     /**
      * Directly load an externally decoded AudioBuffer.
+     *
+     * @param {AudioBuffer} buffer AudioBuffer data.
      */
     loadDecodedBuffer: function (buffer) {
         this.empty();
@@ -478,6 +509,11 @@ WaveSurfer.Observer = {
         this.on(event, fn);
     },
 
+    /**
+     * Trigger event for each handler.
+     *
+     * @param {string} event The name of the event to trigger.
+     */
     fireEvent: function (event) {
         if (!this.handlers) { return; }
         var handlers = this.handlers[event];
