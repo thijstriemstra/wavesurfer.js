@@ -136,7 +136,7 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
         this.drawWave(peaks, max);
 
         // append wave
-        if (this.currentDrawing === undefined) {
+        if (this.newWaveform === undefined) {
 
             if (this.frameCount === undefined) {
                 // keeps track of current frame number
@@ -152,37 +152,40 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
 
             } else {
                 // other frames need to scale and re-use previous content on canvas
-                this.currentDrawing = new Image();
-                this.currentDrawing.onload = function (event) {
+                this.newWaveform = new Image();
+                this.newWaveform.onload = function (event) {
 
-                    this.newDrawing = new Image();
-                    this.newDrawing.onload = function (event) {
+                    this.originalWaveform = new Image();
+                    this.originalWaveform.onload = function (event) {
                         // amount of pixels reserved on the left for appending
                         // the new waveform
                         var appendWidth = this.getWidth() / 10;
 
-                        // scale and redraw previous waveform
+                        // clear existing waveform
                         this.secondaryCc.clearRect(0, 0, this.getWidth(), this.height);
-                        this.secondaryCc.drawImage(this.newDrawing, appendWidth, 0,
+
+                        // scale and redraw previous waveform
+                        this.secondaryCc.drawImage(this.originalWaveform, appendWidth, 0,
                             this.getWidth() - appendWidth, this.height);
 
                         // place new waveform at the start
-                        this.secondaryCc.drawImage(this.currentDrawing,
+                        this.secondaryCc.drawImage(this.newWaveform,
                             0, 0, appendWidth, this.height);
 
                         // ready
                         this.frameCount += 1;
-                        this.currentDrawing = undefined;
+                        this.newWaveform = undefined;
 
                     }.bind(this);
 
-                    // get an instance of the image data that we can manipulate
-                    this.newDrawing.src = this.secondaryCc.canvas.toDataURL();
+                    // get an instance of the current image data that we can
+                    // manipulate
+                    this.originalWaveform.src = this.secondaryCc.canvas.toDataURL();
 
                 }.bind(this);
 
                 // load canvas wave
-                this.currentDrawing.src = this.waveCc.canvas.toDataURL();
+                this.newWaveform.src = this.waveCc.canvas.toDataURL();
             }
         }
     },
