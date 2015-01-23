@@ -157,18 +157,18 @@ WaveSurfer.util.extend(WaveSurfer.Drawer.Canvas, {
 
                     this.newDrawing = new Image();
                     this.newDrawing.onload = function (event) {
-                        // amount of pixels reserved on the right for appending
+                        // amount of pixels reserved on the left for appending
                         // the new waveform
                         var appendWidth = this.getWidth() / 10;
 
                         // scale and redraw previous waveform
                         this.secondaryCc.clearRect(0, 0, this.getWidth(), this.height);
-                        this.secondaryCc.drawImage(this.newDrawing, 0, 0,
+                        this.secondaryCc.drawImage(this.newDrawing, appendWidth, 0,
                             this.getWidth() - appendWidth, this.height);
 
-                        // place new waveform at the end
+                        // place new waveform at the start
                         this.secondaryCc.drawImage(this.currentDrawing,
-                            this.getWidth() - appendWidth, 0, appendWidth, this.height);
+                            0, 0, appendWidth, this.height);
 
                         // ready
                         this.frameCount += 1;
