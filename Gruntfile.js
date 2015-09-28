@@ -21,6 +21,7 @@ module.exports = function(grunt) {
           'src/util.js',
           'src/webaudio.js',
           'src/mediaelement.js',
+          'src/aurora.js',
           'src/drawer.js',
           'src/drawer.*.js'
         ],
@@ -83,7 +84,8 @@ module.exports = function(grunt) {
         // Missing "use strict" statement.
         strict: false,
         globals: {
-          WaveSurfer: true
+          WaveSurfer: true,
+          AV: true
         },
       },
       ignore_warning: {

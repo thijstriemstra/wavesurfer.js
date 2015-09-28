@@ -284,9 +284,13 @@ var WaveSurfer = {
      * Directly load an externally decoded AudioBuffer.
      */
     loadDecodedBuffer: function (buffer) {
-        this.backend.load(buffer);
-        this.drawBuffer();
-        this.fireEvent('ready');
+        if (this.params.backend == 'Aurora') {
+            this.backend.load(buffer, this.drawAuroraBuffer.bind(this));
+        } else {
+            this.backend.load(buffer);
+            this.drawBuffer();
+            this.fireEvent('ready');
+        }
     },
 
     /**
@@ -318,16 +322,33 @@ var WaveSurfer = {
         switch (this.params.backend) {
             case 'WebAudio': return this.loadBuffer(url);
             case 'MediaElement': return this.loadMediaElement(url, peaks);
+            case 'Aurora': return this.loadBuffer(url);
         }
     },
 
     /**
-     * Loads audio using Web Audio buffer backend.
+     * Loads audio using the Web Audio buffer backend.
      */
     loadBuffer: function (url) {
         this.empty();
         // load via XHR and render all at once
         return this.getArrayBuffer(url, this.loadArrayBuffer.bind(this));
+    },
+
+    drawAuroraBuffer: function(buffer) {
+        // buffer is a Float32Array containing the entire decoded audio file
+        this.backend.buffer = {};
+        this.backend.buffer.numberOfChannels = this.backend.media.format.channelsPerFrame;
+        this.backend.buffer.sampleRate = this.backend.media.format.sampleRate;
+        this.backend.buffer.data = buffer;
+
+        this.backend.buffer.length = buffer.length;
+        this.backend.buffer.getChannelData = function(channel) {
+            return this.data;
+        };
+
+        this.drawBuffer();
+        this.fireEvent('ready');
     },
 
     loadMediaElement: function (url, peaks) {
@@ -359,13 +380,13 @@ var WaveSurfer = {
     },
 
     decodeArrayBuffer: function (arraybuffer, callback) {
+        this.tmpEvents.push(
+            this.once('decoded', callback)
+        );
         this.backend.decodeArrayBuffer(
             arraybuffer,
             this.fireEvent.bind(this, 'decoded'),
             this.fireEvent.bind(this, 'error', 'Error decoding audiobuffer')
-        );
-        this.tmpEvents.push(
-            this.once('decoded', callback)
         );
     },
 
