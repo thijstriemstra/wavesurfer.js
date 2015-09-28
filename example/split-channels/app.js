@@ -8,7 +8,7 @@ window.onload = function () {
     });
 
     // Load audio from URL
-    wavesurfer.load('stereo.mp3');
+    wavesurfer.load('../media/stereo.mp3');
 
     // Play/pause on button press
     document.querySelector('[data-action="play"]').addEventListener(
