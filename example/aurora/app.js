@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Check for errors
     wavesurfer.on('error', function(err){
-        console.log('error', error);
+        console.log('error', err);
     });
 
     // Load audio from URL
