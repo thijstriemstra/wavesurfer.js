@@ -1,31 +1,15 @@
 # wavesurfer.js
 
-Interactive navigable audio visualization using
-[Web Audio](https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html)
-and Canvas.
+Interactive navigable audio visualization using [Web Audio](https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html) and Canvas.
 
 ![Screenshot](example/screenshot.png?raw=true "Screenshot")
 
 ## Browser support
-wavesurfer.js works only in modern browsers supporting Web Audio
-(Chrome, Firefox, Safari, Opera etc).
+wavesurfer.js works only in [modern browsers supporting Web Audio](http://caniuse.com/audio-api).
 
-It will fallback to Audio Element in other browsers (without
-graphics).  You can also try
-[wavesurfer.swf](https://github.com/laurentvd/wavesurfer.swf) which is
-a Flash-based fallback with graphics.
+It will fallback to Audio Element in other browsers (without graphics). You can also try [wavesurfer.swf](https://github.com/laurentvd/wavesurfer.swf) which is a Flash-based fallback with graphics.
 
 ## FAQ
-### How can I report a bug?
-To report a bug, please create a failing test case and submit a pull
-request. The test case can be either a Jasmine spec, or a simple HTML
-page demonstrating the problem.
-
-### Can I pay you for a wavesurfer.js job?
-For *payed* consultancy, feel free to email me at
-katspaugh@gmail.com. For trivial questions about programming, please
-refer to StackOverflow.
-
 ### Can the audio start playing before the waveform is drawn?
 Yes, if you use the `backend: 'MediaElement'` option. See here: http://wavesurfer-js.org/example/audio-element/. The audio will start playing as you press play. A thin line will be displayed until the whole audio file is downloaded and decoded to draw the waveform.
 
@@ -213,7 +197,7 @@ General events:
  * `remove` - Happens just before the region is removed.
  * `update` - When the region's options are updated.
 
- Mouse events:
+Mouse events:
 
  * `click` - When the mouse clicks on the region.  Callback will receive a `MouseEvent`.
  * `dblclick` - When the mouse double-clicks on the region.  Callback will receive a `MouseEvent`.
