@@ -165,7 +165,8 @@ After doing that, use `wavesurfer.addRegion()` to create Region objects.
 
 ### Exposed Methods
 
- * `addRegion(options)` – Creates a region on the waveform. Returns a `Region` object.  See [Region Options](#region-options), [Region Methods](#region-methods) and [Region Events](#region-events) below.
+ * `addRegion(options)` – Creates a region on the waveform. Returns a `Region` object.  See [Region Options](#region-options), [Region Methods](#region-methods) and [Region Events](#region-events) below. 
+    * **Note:** You cannot add regions until the audio has finished loading, otherwise the `start:` and `end:` properties of the new region will be set to `0`, or an unexpected value.
  * `clearRegions()` – Removes all regions.
  * `enableDragSelection(options)` – Lets you create regions by selecting.
    areas of the waveform with mouse. `options` are Region objects' params (see [below](#region-options)).
@@ -254,7 +255,7 @@ thanks to
 
 ## License
 
-![cc-by](http://i.creativecommons.org/l/by/3.0/88x31.png)
+![cc-by](https://i.creativecommons.org/l/by/3.0/88x31.png)
 
 This work is licensed under a
-[Creative Commons Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/deed.en_US).
+[Creative Commons Attribution 3.0 Unported License](https://creativecommons.org/licenses/by/3.0/deed.en_US).
